@@ -3,6 +3,8 @@ import Topbar from "../components/topbar";
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Grid, Card, CardContent } from "@mui/material";
 import getFlashcards from "../api/api";
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 
 
 export default function Page() {
@@ -10,6 +12,10 @@ export default function Page() {
 
     // State to keep track of which cards are flipped
     const [flippedCards, setFlippedCards] = useState();
+    const [currentFlashcardDisplayed, setCurrentFlashcardDisplayed] = useState(null)
+    useEffect(() => {
+        console.log('curfl: ', currentFlashcardDisplayed);
+    }, [currentFlashcardDisplayed]);
 
     // Function to handle the flip
     const handleFlip = (index) => {
@@ -26,6 +32,8 @@ export default function Page() {
             if (data && data.flashcards) {
                 setFlashcards(data.flashcards);
                 setFlippedCards(new Array(data.flashcards.length).fill(false));  // Initialize flippedCards after flashcards are loaded
+                setCurrentFlashcardDisplayed(0)
+
             } else {
                 console.log('no flashcard data found')
                 setFlashcards([]);  // Handle case where no flashcards are returned
@@ -36,13 +44,13 @@ export default function Page() {
             setFlashcards([]);  // Handle error case by setting flashcards to an empty array
         }
     };
-    useEffect(()=> {
+    useEffect(() => {
         loadFlashcards()
     }, [])
 
     return (
         <div>
-        <Topbar/>
+            <Topbar />
             <style jsx>{`
                 .flashcard {
                     perspective: 1000px;
@@ -85,9 +93,52 @@ export default function Page() {
                 }
 
             `}</style>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh" }}>
+                {flashcards.length > 0 && currentFlashcardDisplayed !== null ?
+                    <Grid item xs={12} sm={6} md={2} key={currentFlashcardDisplayed} container>
+                        {currentFlashcardDisplayed-1 >= 0 ? <ArrowCircleLeftIcon onClick={()=> setCurrentFlashcardDisplayed(currentFlashcardDisplayed-1)}/>: ""}
+                        <div className={`flashcard ${flippedCards[currentFlashcardDisplayed] ? 'flipped' : ''}`} onClick={() => handleFlip(currentFlashcardDisplayed)}>
+
+                            <div className="flashcard-inner">
+                                {!flippedCards[currentFlashcardDisplayed] ? (
+                                    <Card className="flashcard-front">
+                                        <CardContent>
+                                            <div className="card-content-front">
+                                                <Typography variant="h6">Front:</Typography>
+                                                <Typography>{flashcards[currentFlashcardDisplayed].front}</Typography>
+                                            </div>
+
+                                        </CardContent>
 
 
-            {flashcards.length > 0 && (
+
+                                    </Card>
+                                ) : (
+                                    <Card className="flashcard-back">
+                                        <CardContent>
+                                            <div className="card-content-back">
+                                                <Typography variant="h6" className="GFG">Back:</Typography>
+                                                <Typography>{flashcards[currentFlashcardDisplayed].back}</Typography>
+                                            </div>
+
+                                        </CardContent>
+
+
+
+
+                                    </Card>
+                                )}
+                            </div>
+                        </div>
+                        {currentFlashcardDisplayed+1 < flashcards.length ? <ArrowCircleRightIcon onClick={()=>setCurrentFlashcardDisplayed(currentFlashcardDisplayed+1) }/> : ""}
+                       
+                    </Grid>
+                    
+                    : "Loading..."}
+            </div>
+
+
+            {/* {flashcards.length > 0 && (
                 <Box sx={{ mt: 4 }}>
                     <Typography variant="h5" component="h2" gutterBottom>
                         Generated Flashcards
@@ -132,7 +183,7 @@ export default function Page() {
                         ))}
                     </Grid>
                 </Box>
-            )}
+            )} */}
         </div>
     );
 }
