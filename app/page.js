@@ -7,6 +7,10 @@ import Topbar from './components/topbar'
 
 export default function Home() {
   return (
-    <Topbar/>
+    <div>
+      <Topbar />
+      <Button color="inherit" href="/flashcard">flashcard</Button>
+    </div>
+
   );
 }
