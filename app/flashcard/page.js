@@ -1,7 +1,7 @@
 'use client'
 import Topbar from "../components/topbar";
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Grid, Card, CardContent } from "@mui/material";
+import { Box, Typography, Grid, Card, CardContent, CircularProgress } from "@mui/material";
 import getFlashcards from "../api/api";
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
@@ -95,8 +95,8 @@ export default function Page() {
             `}</style>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh" }}>
                 {flashcards.length > 0 && currentFlashcardDisplayed !== null ?
-                    <Grid item xs={12} sm={6} md={2} key={currentFlashcardDisplayed} container>
-                        {currentFlashcardDisplayed-1 >= 0 ? <ArrowCircleLeftIcon onClick={()=> setCurrentFlashcardDisplayed(currentFlashcardDisplayed-1)}/>: ""}
+                    <Grid item xs={12} sm={6} md={2} key={currentFlashcardDisplayed} container spacing={2}>
+                        {currentFlashcardDisplayed-1 >= 0 ? <ArrowCircleLeftIcon onClick={()=> setCurrentFlashcardDisplayed(currentFlashcardDisplayed-1)}/> : ""}
                         <div className={`flashcard ${flippedCards[currentFlashcardDisplayed] ? 'flipped' : ''}`} onClick={() => handleFlip(currentFlashcardDisplayed)}>
 
                             <div className="flashcard-inner">
@@ -134,7 +134,7 @@ export default function Page() {
                        
                     </Grid>
                     
-                    : "Loading..."}
+                    : <CircularProgress/>}
             </div>
 
 
